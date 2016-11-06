@@ -4,19 +4,17 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 class Expr{
 	public:
 		//Construit une expression à partir du texte
-		Expr(const string str);
+		Expr(const std::string str);
 		//Retourne la valeur de l'expression
 		int eval();
 		//Affiche la représentation interne
 		void print();
 
 	private:
-		vector<string> _expr;
+		std::vector<std::string> _expr;
 };
 
 #endif

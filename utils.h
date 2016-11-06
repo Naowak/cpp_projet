@@ -5,15 +5,13 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
-bool is_operator(const string& s);
-bool is_number(const string& s);
-bool is_parentheses(const string& s);
+bool is_operator(const std::string& s);
+bool is_number(const std::string& s);
+bool is_parentheses(const std::string& s);
 
 
-string set_space(const string& s);
-vector<ExprToken> split (const string& s, char delim);
+std::string set_space(const std::string& s);
+std::vector<ExprToken> split (const std::string& s, char delim);
 
 
 #endif

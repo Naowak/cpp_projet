@@ -2,6 +2,8 @@
 #include "ExprToken.h"
 #include <string>
 
+using namespace std;
+
 ExprToken::ExprToken(const string& s){
 	if(is_number(s)){
 		_type = num;
@@ -22,7 +24,7 @@ ExprToken::ExprToken(const string& s){
 		cout << "Error constructor" << endl;
 }
 
-ExprToken::type ExprToken::get_type(){
+type ExprToken::get_type(){
 	return _type;
 }
 

@@ -4,20 +4,19 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
+enum type{num, op, par_left, par_right};
 
 class ExprToken{
 public:
-	enum type{num, op, par_left, par_right};
-	ExprToken(const string& s);
+	ExprToken(const std::string& s);
 	type get_type();
-	string get_value();
+	std::string get_value();
 	int get_operator_priority() const;
 	int compare_priority(const ExprToken& token);
 
 private:
 	type _type;
-	string _value;
+	std::string _value;
 };
 
 #endif

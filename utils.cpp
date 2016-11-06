@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 
+using namespace std;
+
 bool is_operator(const string& s){
 	return s == "+" || s == "-" || s == "/" || s == "*";
 }

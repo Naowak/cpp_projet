@@ -3,7 +3,7 @@
 #include <stack>
 #include <string>
 
-
+using namespace std;
 
 Expr::Expr(const string str){
 	string s = set_space(str);
@@ -14,10 +14,10 @@ Expr::Expr(const string str){
 
 	for(it = vect.begin(); it < vect.end(); it++){
 
-		if((*it).get_type() == ExprToken::num)
+		if((*it).get_type() == num)
 			out.push_back((*it).get_value());
 
-		else if((*it).get_type() == ExprToken::op){
+		else if((*it).get_type() == op){
 			while(!pile.empty() && (*it).compare_priority(pile.top()) < 0){
 				out.push_back(pile.top().get_value());
 				pile.pop();
@@ -25,12 +25,12 @@ Expr::Expr(const string str){
 			pile.push(*it);
 		}
 
-		else if((*it).get_type() == ExprToken::par_left){
+		else if((*it).get_type() == par_left){
 			pile.push(*it);
 		}
 
-		else if((*it).get_type() == ExprToken::par_right){
-			while(pile.top().get_type() != ExprToken::par_left){
+		else if((*it).get_type() == par_right){
+			while(pile.top().get_type() != par_left){
 				out.push_back(pile.top().get_value());
 				pile.pop();
 				if(pile.empty())
