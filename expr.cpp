@@ -1,4 +1,5 @@
 #include "expr.h"
+#include "ExprToken.h"
 #include "utils.h"
 #include <stack>
 #include <string>
@@ -7,44 +8,50 @@ using namespace std;
 
 Expr::Expr(const string str){
 	string s = set_space(str);
-	vector<ExprToken> vect = split(s, ' ');
-	stack<ExprToken> pile;
+	vector<ExprToken*> vect = split(s, ' ');
+	stack<ExprToken*> pile;
 	vector<string> out;
-	vector<ExprToken>::iterator it;
+	vector<ExprToken*>::iterator it;
 
 	for(it = vect.begin(); it < vect.end(); it++){
 
-		if((*it).get_type() == num)
-			out.push_back((*it).get_value());
+		if((*it)->get_type() == num)
+			out.push_back((*it)->get_value());
 
-		else if((*it).get_type() == op){
-			while(!pile.empty() && (*it).compare_priority(pile.top()) < 0){
-				out.push_back(pile.top().get_value());
+		else if((*it)->get_type() == op){
+			while(!pile.empty() && (*it)->compare_priority(pile.top()) < 0){ //pile.top() rtourne 0x0
+				out.push_back(pile.top()->get_value());
 				pile.pop();
 			}
 			pile.push(*it);
 		}
 
-		else if((*it).get_type() == par_left){
-			pile.push(*it);
-		}
-
-		else if((*it).get_type() == par_right){
-			while(pile.top().get_type() != par_left){
-				out.push_back(pile.top().get_value());
-				pile.pop();
-				if(pile.empty())
-					cout << "Error : parenthese ouvrante manquante" << endl;
+		else if((*it)->get_type() == par){
+			if((*it)->get_value() == "("){
+				pile.push(*it);
 			}
-			pile.pop();
+			else{
+				//(*it) est donc une parenthèse droite
+				while(!pile.empty() && !(pile.top()->get_type() == par)){ //vu qu'on empile que des parenthese gauche, pas besoin de test si s'en est une.
+					out.push_back(pile.top()->get_value());
+					pile.pop();
+					if(pile.empty()){
+						cout << "Error : parenthese ouvrante manquante" << endl;
+						error();
+					}
+				}
+				pile.pop();
+			}
 		}
 
-		else
-			cout << "Error : " << (*it).get_value() << " is not a number or an operator." << endl;
+		else{
+			cout << "Error : " << (*it)->get_value() << " is not a number or an operator." << endl;
+			error();
+		}
 	}
 
 	while(!pile.empty()){
-		out.push_back(pile.top().get_value());
+		out.push_back(pile.top()->get_value());
 		pile.pop();
 	}
 
@@ -87,8 +94,10 @@ int Expr::eval(){
 
 			pile.push(to_string(res));
 		}
-		else
+		else{
 			cout << "Error eval" << endl;
+			error();
+		}
 	}
 
 	return stoi(pile.top());

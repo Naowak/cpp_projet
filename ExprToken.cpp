@@ -4,26 +4,6 @@
 
 using namespace std;
 
-ExprToken::ExprToken(const string& s){
-	if(is_number(s)){
-		_type = num;
-		_value = string(s);
-	}
-	else if(is_operator(s)){
-		_type = op;
-		_value = string(s);
-	}
-	else if(is_parentheses(s)){
-		if(s == "(")
-			_type = par_left;
-		else
-			_type = par_right;
-		_value = string(s);
-	}
-	else
-		cout << "Error constructor" << endl;
-}
-
 type ExprToken::get_type(){
 	return _type;
 }
@@ -32,28 +12,92 @@ string ExprToken::get_value(){
 	return _value;
 }
 
-/* If this is an operator, return 0 if its value is + or -, 1 if it is / or *.
-Return -1 if it's not an operator */
-int ExprToken::get_operator_priority() const{
-	if(_type == op){
-		if(_value == "-" || _value == "+")
-			return 1;
-		return 2;
-	}
-	else if(_type == par_left){
-		return 0;
-	}
-	cout << "Error get_operator_priority" << endl;
-	return -1;
-}
 
+int ExprToken::compare_priority(const ExprToken* token){
+	int v1, v2;
 
-int ExprToken::compare_priority(const ExprToken& token){
-	int v1 = this->get_operator_priority();
-	int v2 = token.get_operator_priority();
+	v1 = this->get_priority();
+	v2 = token->get_priority();
 	if(v1 > v2)
 		return 1;
 	else if(v1 == v2)
 		return 0;
 	return -1;
+}
+
+
+
+
+
+TokenNum::TokenNum(const std::string& s){
+	if(!is_number(s)){
+		cout << "Error " << s << " is not a number." << endl;
+		error();
+	}
+	_type = num;
+	_value = string(s);
+	_number_value = stoi(s);
+}
+
+int TokenNum::get_priority() const{
+	cout << "Error get_priority on num" << endl;
+	error();
+	return -1;
+}
+
+int TokenNum::get_number_value() const{
+	return _number_value;
+}
+
+
+
+
+TokenOp::TokenOp(const std::string& s){
+	if(!is_operator(s)){
+		cout << "Error : " << s << " is not an operator." << endl;
+		error();
+	}
+	_type = op;
+	_value = string(s);
+}
+
+int TokenOp::get_priority() const {
+	if(_value == "+" || _value == "-")
+		return 1;
+	return 2;
+}
+
+int TokenOp::eval(TokenNum a, TokenNum b) const {
+	if(_value == "+")
+		return a.get_number_value() + b.get_number_value();
+	if(_value == "-")
+		return a.get_number_value() - b.get_number_value();
+	if(_value == "*")
+		return a.get_number_value() * b.get_number_value();
+	if(_value == "/")
+		return a.get_number_value() / b.get_number_value();
+	cout << "Error" << _value << "has not a defined eval" << endl;
+	error();
+	return 0;
+}
+
+
+
+TokenPar::TokenPar(const std::string& s){
+	if(!is_parentheses(s)){
+		cout << "Error : " << s << "is not a parenthese." << endl;
+		error();
+	}
+	_type = par;
+	_value = string(s);
+}
+
+int TokenPar::get_priority() const{
+	if(_value == ")")
+		cout << "Error : token_par get_priority on right parenthese." << endl;
+	return 0;
+}
+
+bool TokenPar::is_left_par() const{
+	return _value == "(";
 }

@@ -22,6 +22,14 @@ bool is_parentheses(const string& s){
 	return s == "(" || s == ")";
 }
 
+
+
+void error(){
+	throw exception();
+}
+
+
+
 string set_space(const string& s){
 	string a;
 	char c;
@@ -54,9 +62,24 @@ string set_space(const string& s){
 	return res;
 }
 
-vector<ExprToken> split (const string& s, char delim){
+ExprToken* create_expr_token(const string& s){
+	ExprToken* et;
+	if(is_number(s))
+		et = new TokenNum(s);
+	else if(is_operator(s))
+		et = new TokenOp(s);
+	else if(is_parentheses(s))
+		et = new TokenPar(s);
+	else{
+		cout << "Error create_expr_token : " << s << "has no type." << endl;
+		error();
+	}
+	return et;
+}
 
-	vector <ExprToken> vec;
+vector<ExprToken*> split (const string& s, char delim){
+
+	vector <ExprToken*> vec;
 
 	stringstream ss;
 	ss << s;
@@ -66,19 +89,11 @@ vector<ExprToken> split (const string& s, char delim){
 	
 	do{
 		getline(ss, str, delim);
-		vec.push_back(ExprToken(str));
+		if(str.length() > 0)
+			vec.push_back(create_expr_token(str));
 	}
 	while(!ss.eof());
 
 	return vec;
 } 
 
-/*int main(){
-	string s = "2+6 2* 8 + 9 - 562";
-	string t = "2.6* 9 +5 +66";
-
-	cout << set_space(s) << endl;
-	cout << set_space(t) << endl;
-
-	return 0;
-}*/
