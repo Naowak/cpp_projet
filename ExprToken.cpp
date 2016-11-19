@@ -30,8 +30,8 @@ int ExprToken::compare_priority(const ExprToken* token){
 
 
 TokenNum::TokenNum(const std::string& s){
-	if(!is_number(s)){
-		cout << "Error " << s << " is not a number." << endl;
+	if(!is_number(s) && (s.at(0) != '-' || !is_number(s.substr(1, s.length() - 1)))){
+		cout << "Error TokenNum constructor : " << s << " is not a number." << endl;
 		error();
 	}
 	_type = num;
@@ -54,7 +54,7 @@ int TokenNum::get_number_value() const{
 
 TokenOp::TokenOp(const std::string& s){
 	if(!is_operator(s)){
-		cout << "Error : " << s << " is not an operator." << endl;
+		cout << "Error : TokenOp constructor : " << s << " is not an operator." << endl;
 		error();
 	}
 	_type = op;
@@ -76,7 +76,7 @@ int TokenOp::eval(TokenNum a, TokenNum b) const {
 		return a.get_number_value() * b.get_number_value();
 	if(_value == "/")
 		return a.get_number_value() / b.get_number_value();
-	cout << "Error" << _value << "has not a defined eval" << endl;
+	cout << "Error TokenOp::eval : " << _value << "has not a defined eval" << endl;
 	error();
 	return 0;
 }
@@ -85,7 +85,7 @@ int TokenOp::eval(TokenNum a, TokenNum b) const {
 
 TokenPar::TokenPar(const std::string& s){
 	if(!is_parentheses(s)){
-		cout << "Error : " << s << "is not a parenthese." << endl;
+		cout << "Error TokenPar constructor : " << s << "is not a parenthese." << endl;
 		error();
 	}
 	_type = par;
@@ -94,7 +94,7 @@ TokenPar::TokenPar(const std::string& s){
 
 int TokenPar::get_priority() const{
 	if(_value == ")")
-		cout << "Error : token_par get_priority on right parenthese." << endl;
+		cout << "Error TokenPar::get_priority : token_par get_priority on right parenthese." << endl;
 	return 0;
 }
 

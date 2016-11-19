@@ -10,97 +10,114 @@ Expr::Expr(const string str){
 	string s = set_space(str);
 	vector<ExprToken*> vect = split(s, ' ');
 	stack<ExprToken*> pile;
-	vector<string> out;
 	vector<ExprToken*>::iterator it;
 
 	for(it = vect.begin(); it < vect.end(); it++){
 
-		if((*it)->get_type() == num)
-			out.push_back((*it)->get_value());
+		if((*it)->get_type() == num){
+			//On lit un nombre
+			_tokens.push_back(*it);
+		}
 
 		else if((*it)->get_type() == op){
-			while(!pile.empty() && (*it)->compare_priority(pile.top()) < 0){ //pile.top() rtourne 0x0
-				out.push_back(pile.top()->get_value());
+			while(!pile.empty() && (*it)->compare_priority(pile.top()) < 0){
+				//Tant que le top de la pile a une priorité supérieur ou égale
+				_tokens.push_back(pile.top());
 				pile.pop();
 			}
 			pile.push(*it);
 		}
 
 		else if((*it)->get_type() == par){
-			if((*it)->get_value() == "("){
+			if( ((TokenPar *) (*it))->is_left_par()){
+				//parenthese ouvrante (gauche)
 				pile.push(*it);
 			}
 			else{
 				//(*it) est donc une parenthèse droite
+				delete (*it); // Nous n'en avons plus besoin
 				while(!pile.empty() && !(pile.top()->get_type() == par)){ //vu qu'on empile que des parenthese gauche, pas besoin de test si s'en est une.
-					out.push_back(pile.top()->get_value());
+					_tokens.push_back(pile.top());
 					pile.pop();
 					if(pile.empty()){
-						cout << "Error : parenthese ouvrante manquante" << endl;
+						//Pas de parenthese ouvrante dans la pile
+						cout << "Error Expr constructor : parenthese ouvrante manquante" << endl;
 						error();
 					}
 				}
+				ExprToken* tmp = pile.top();
 				pile.pop();
+				delete tmp;
 			}
 		}
 
 		else{
-			cout << "Error : " << (*it)->get_value() << " is not a number or an operator." << endl;
+			//Type non défini
+			cout << "Error Expr constructor : " << (*it)->get_value() << " is not a number, an operator or a parenthese." << endl;
 			error();
 		}
 	}
 
 	while(!pile.empty()){
-		out.push_back(pile.top()->get_value());
+		//L'entrée est épuisé, on vide la pile
+		_tokens.push_back(pile.top());
 		pile.pop();
 	}
+}
 
-	_expr = out;
+Expr::~Expr(){
+	vector<ExprToken*>::iterator it;
+
+	for(it = _tokens.begin(); it != _tokens.end(); ++it)
+		delete (*it);
 }
 
 void Expr::print(){
-	vector<string>::iterator it;
+	vector<ExprToken*>::iterator it;
 
-	for(it = _expr.begin(); it != _expr.end(); it++){
-		cout << *it << " ";
+	for(it = _tokens.begin(); it != _tokens.end(); ++it){
+		cout << (*it)->get_value() << " ";
 	}
 	cout << endl;
 }
 
 
 int Expr::eval(){
-	stack<string> pile;
-	vector<string>::iterator it;
+	stack<ExprToken*> pile;
+	vector<ExprToken*>::iterator it;
+	vector<ExprToken*> liste_tmp;
 
-	for(it = _expr.begin(); it != _expr.end(); it++)
+	for(it = _tokens.begin(); it != _tokens.end(); ++it)
 	{
-		if(is_number(*it))
+		if((*it)->get_type() == num)
 			pile.push(*it);
-		else if(is_operator(*it)){
-			int a = stoi(pile.top());
-			pile.pop();
-			int b = stoi(pile.top());
-			pile.pop();
-			int res;
 
-			if(*it == "+")
-				res = b + a;
-			else if(*it == "-")
-				res = b - a;
-			else if(*it == "*")
-				res = b * a;
-			else if(*it == "/")
-				res = b / a;
+		else if((*it)->get_type() == op){
+			TokenNum* b = (TokenNum*) pile.top();
+			pile.pop();
+			TokenNum* a = (TokenNum*) pile.top();
+			pile.pop();
 
-			pile.push(to_string(res));
+			int res = ((TokenOp *) *it)->eval(*a, *b);
+
+			ExprToken* tmp = new TokenNum(to_string(res));
+			liste_tmp.push_back(tmp);
+
+			pile.push(tmp);
 		}
+
 		else{
 			cout << "Error eval" << endl;
 			error();
 		}
 	}
 
-	return stoi(pile.top());
+	int ret = ((TokenNum *) pile.top())->get_number_value();
+
+	for(it = liste_tmp.begin(); it != liste_tmp.end(); ++it)
+		delete *it;
+
+	return ret;
 }
 
 

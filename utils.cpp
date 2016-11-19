@@ -13,7 +13,7 @@ bool is_number(const string& s){
 	int length = s.length();
 	int i = 0;
 	for(; i < length; i++)
-		if(s[i] < '0' || s[i] > '9')
+		if(s[i] < '0' || s[i] > '9') 
 			return false;
 	return true;
 }
