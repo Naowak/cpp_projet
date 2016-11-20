@@ -13,7 +13,7 @@ class Expr{
 		//Destroy an Expr
 		~Expr();
 		//Retourne la valeur de l'expression
-		int eval();
+		double eval();
 		//Affiche la représentation interne
 		void print();
 

@@ -30,13 +30,13 @@ int ExprToken::compare_priority(const ExprToken* token){
 
 
 TokenNum::TokenNum(const std::string& s){
-	if(!is_number(s) && (s.at(0) != '-' || !is_number(s.substr(1, s.length() - 1)))){
+	if(!is_number(s)){
 		cout << "Error TokenNum constructor : " << s << " is not a number." << endl;
 		error();
 	}
 	_type = num;
 	_value = string(s);
-	_number_value = stoi(s);
+	_number_value = stod(s);
 }
 
 int TokenNum::get_priority() const{
@@ -45,7 +45,7 @@ int TokenNum::get_priority() const{
 	return -1;
 }
 
-int TokenNum::get_number_value() const{
+double TokenNum::get_number_value() const{
 	return _number_value;
 }
 
@@ -67,7 +67,7 @@ int TokenOp::get_priority() const {
 	return 2;
 }
 
-int TokenOp::eval(TokenNum a, TokenNum b) const {
+double TokenOp::eval(TokenNum a, TokenNum b) const {
 	if(_value == "+")
 		return a.get_number_value() + b.get_number_value();
 	if(_value == "-")

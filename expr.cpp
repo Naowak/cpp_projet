@@ -82,10 +82,11 @@ void Expr::print(){
 }
 
 
-int Expr::eval(){
+double Expr::eval(){
 	stack<ExprToken*> pile;
 	vector<ExprToken*>::iterator it;
 	vector<ExprToken*> liste_tmp;
+	double res;
 
 	for(it = _tokens.begin(); it != _tokens.end(); ++it)
 	{
@@ -98,7 +99,8 @@ int Expr::eval(){
 			TokenNum* a = (TokenNum*) pile.top();
 			pile.pop();
 
-			int res = ((TokenOp *) *it)->eval(*a, *b);
+			res = ((TokenOp *) *it)->eval(*a, *b);
+			//cout << "Opération : " << a->get_value() << " " << ((TokenOp *) *it)->get_value() << " " << b->get_value() << " " << res << endl;
 
 			ExprToken* tmp = new TokenNum(to_string(res));
 			liste_tmp.push_back(tmp);
@@ -112,7 +114,7 @@ int Expr::eval(){
 		}
 	}
 
-	int ret = ((TokenNum *) pile.top())->get_number_value();
+	double ret = ((TokenNum *) pile.top())->get_number_value();
 
 	for(it = liste_tmp.begin(); it != liste_tmp.end(); ++it)
 		delete *it;
@@ -123,9 +125,9 @@ int Expr::eval(){
 
 
 int main(){
-	string str1 = "(17-24)/4*3+2";
+	string str1 = "(17.6-24.1)/4*3+2.49";
 	Expr expr = Expr(str1);
 	expr.print();
-	int res = expr.eval();
+	double res = expr.eval();
 	cout << "Résultat : " << res << endl;
 }

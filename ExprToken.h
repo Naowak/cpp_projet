@@ -29,16 +29,16 @@ class TokenNum : public ExprToken {
 public:
 	TokenNum(const std::string& s);
 	int get_priority() const;
-	int get_number_value() const;
+	double get_number_value() const;
 private:
-	int _number_value;
+	double _number_value;
 };
 
 class TokenOp : public ExprToken {
 public:
 	TokenOp(const std::string& s);
 	int get_priority() const;
-	int eval(TokenNum a, TokenNum b) const;
+	double eval(TokenNum a, TokenNum b) const;
 };
 
 class TokenPar : public ExprToken {

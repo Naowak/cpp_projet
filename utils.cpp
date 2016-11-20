@@ -2,24 +2,22 @@
 #include "ExprToken.h"
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <regex>
+
 
 using namespace std;
 
 bool is_operator(const string& s){
-	return s == "+" || s == "-" || s == "/" || s == "*";
+	return regex_match(s, regex("[+-/*]"));
 }
 
 bool is_number(const string& s){
-	int length = s.length();
-	int i = 0;
-	for(; i < length; i++)
-		if(s[i] < '0' || s[i] > '9') 
-			return false;
-	return true;
+	return regex_match(s, regex("-?[0-9]+\\.?[0-9]*"));
 }
 
 bool is_parentheses(const string& s){
-	return s == "(" || s == ")";
+	return regex_match(s, regex("[()]"));
 }
 
 

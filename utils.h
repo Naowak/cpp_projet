@@ -4,6 +4,7 @@
 #include "ExprToken.h"
 #include <iostream>
 #include <vector>
+#include <string>
 
 bool is_operator(const std::string& s);
 bool is_number(const std::string& s);
