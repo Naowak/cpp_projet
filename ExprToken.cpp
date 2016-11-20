@@ -12,7 +12,6 @@ string ExprToken::get_string(){
 	return _value;
 }
 
-
 int ExprToken::compare_priority(const ExprToken* token){
 	int v1, v2;
 

@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Expr::Expr(const string str){
+Expr::Expr(const string& str, type_expr te){
 	string s = set_space(str);
 	vector<ExprToken*> vect = split(s, ' ');
 	stack<ExprToken*> pile;
@@ -35,7 +35,7 @@ Expr::Expr(const string str){
 			}
 			else{
 				//(*it) est donc une parenthèse droite
-				delete (*it); // Nous n'en avons plus besoin
+				delete *it; // Nous n'en avons plus besoin
 				while(!pile.empty() && !(pile.top()->get_type() == par)){ //vu qu'on empile que des parenthese gauche, pas besoin de test si s'en est une.
 					_tokens.push_back(pile.top());
 					pile.pop();
@@ -63,13 +63,16 @@ Expr::Expr(const string str){
 		_tokens.push_back(pile.top());
 		pile.pop();
 	}
+
+	//On indique à chaque expression si elle a été indiqué comme printed ou pas.
+	_type_expr = te;
 }
 
 Expr::~Expr(){
 	vector<ExprToken*>::iterator it;
 
 	for(it = _tokens.begin(); it != _tokens.end(); ++it)
-		delete (*it);
+		delete *it;
 }
 
 void Expr::print(){
@@ -114,7 +117,10 @@ double Expr::eval(){
 		}
 	}
 
-	double ret = ((TokenNum *) pile.top())->get_number_value();
+	double ret = 0;
+
+	if(!pile.empty())
+		ret = ((TokenNum *) pile.top())->get_number_value();
 
 	for(it = liste_tmp.begin(); it != liste_tmp.end(); ++it)
 		delete *it;
@@ -122,12 +128,16 @@ double Expr::eval(){
 	return ret;
 }
 
+bool Expr::is_printed(){
+	return _type_expr == printed_expr;
+}
 
 
-int main(){
+
+/*int main(){
 	string str1 = "(17.6-24.1)/4*3+2.49";
-	Expr expr = Expr(str1);
+	Expr expr = Expr(str1, printed_expr);
 	expr.print();
 	double res = expr.eval();
 	cout << "Résultat : " << res << endl;
-}
+}*/

@@ -1,9 +1,10 @@
-#include "utils.h"
-#include "ExprToken.h"
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <regex>
+#include <vector>
+#include "ExprToken.h"
+#include "utils.h"
 
 
 using namespace std;
@@ -93,5 +94,24 @@ vector<ExprToken*> split (const string& s, char delim){
 	while(!ss.eof());
 
 	return vec;
-} 
+}
+
+vector<string> split_in_string (const string& s, char delim){
+
+	vector <string> vec;
+
+	stringstream ss;
+	ss << s;
+
+	string str;
+
+	
+	do{
+		getline(ss, str, delim);
+		vec.push_back(string(str));
+	}
+	while(!ss.eof());
+
+	return vec;
+}  
 
