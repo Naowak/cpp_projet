@@ -1,8 +1,9 @@
-#include "expr.h"
-#include "ExprToken.h"
-#include "utils.h"
 #include <stack>
 #include <string>
+#include "utils.h"
+#include "ExprToken.h"
+#include "expr.h"
+
 
 using namespace std;
 
@@ -12,10 +13,17 @@ Expr::Expr(const string& str, type_expr te){
 	stack<ExprToken*> pile;
 	vector<ExprToken*>::iterator it;
 
+
+
 	for(it = vect.begin(); it < vect.end(); it++){
 
 		if((*it)->get_type() == num){
 			//On lit un nombre
+			_tokens.push_back(*it);
+		}
+
+		else if((*it)->get_type() == id){
+			//On lit une var
 			_tokens.push_back(*it);
 		}
 
@@ -96,13 +104,16 @@ double Expr::eval(){
 		if((*it)->get_type() == num)
 			pile.push(*it);
 
+		else if((*it)->get_type() == id)
+			pile.push(*it);
+
 		else if((*it)->get_type() == op){
-			TokenNum* b = (TokenNum*) pile.top();
+			TokenValue* b = (TokenValue*) pile.top();
 			pile.pop();
-			TokenNum* a = (TokenNum*) pile.top();
+			TokenValue* a = (TokenValue*) pile.top();
 			pile.pop();
 
-			res = ((TokenOp *) *it)->eval(*a, *b);
+			res = ((TokenOp *) *it)->eval(a, b);
 			//cout << "Opération : " << a->get_string() << " " << ((TokenOp *) *it)->get_string() << " " << b->get_string() << " " << res << endl;
 
 			ExprToken* tmp = new TokenNum(to_string(res));
@@ -112,7 +123,8 @@ double Expr::eval(){
 		}
 
 		else{
-			cout << "Error eval" << endl;
+			cout << "Error eval : " << (*it)->get_string() << " non reconize" << endl;
+			cout << "Type is : " << (*it)->get_type() << endl;
 			error();
 		}
 	}

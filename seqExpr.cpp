@@ -59,9 +59,10 @@ void seqExpr::print(){
 }
 
 int main(){
-	string str1 = "(17.6-24.1)/4*3+2.49;5676;";//59*7+6;53/8\n56-9\n2-3;5*9";
+	string str1 = "(17.6-24.1)/4*3+2.49\n869;8.23*96-5/4.569";//59*7+6;53/8\n56-9\n2-3;5*9";
+	string str2 = "var = (5 + 9) *7;second = 2;var * second / 3 + 4";
 
-	seqExpr sexpr = seqExpr(str1);
+	seqExpr sexpr = seqExpr(str2);
 	sexpr.print();
 	cout << endl << "Resultats : " << endl;
 	sexpr.eval();

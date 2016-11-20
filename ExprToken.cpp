@@ -1,17 +1,18 @@
+#include <string>
 #include "utils.h"
 #include "ExprToken.h"
-#include <string>
 
 using namespace std;
+
+Map TokenValue::memory;
+
 
 type ExprToken::get_type(){
 	return _type;
 }
-
 string ExprToken::get_string(){
 	return _value;
 }
-
 int ExprToken::compare_priority(const ExprToken* token){
 	int v1, v2;
 
@@ -28,6 +29,18 @@ int ExprToken::compare_priority(const ExprToken* token){
 
 
 
+int TokenValue::get_priority() const{
+	cout << "Error : get_priority on TokenValue" << endl;
+	error();
+	return -1;
+}
+
+
+
+
+
+
+
 TokenNum::TokenNum(const std::string& s){
 	if(!is_number(s)){
 		cout << "Error TokenNum constructor : " << s << " is not a number." << endl;
@@ -37,16 +50,35 @@ TokenNum::TokenNum(const std::string& s){
 	_value = string(s);
 	_number_value = stod(s);
 }
-
-int TokenNum::get_priority() const{
-	cout << "Error get_priority on num" << endl;
-	error();
-	return -1;
-}
-
 double TokenNum::get_number_value() const{
 	return _number_value;
 }
+
+
+
+
+
+
+
+
+TokenVar::TokenVar(const std::string& s){
+	if(!is_id(s)){
+		cout << "Error TokenVar constructor : " << s << " is not an id." << endl;
+		error();
+	}
+	_type = id;
+	_value = string(s);
+}
+double TokenVar::get_number_value() const{
+	return TokenValue::memory.get_value(_value);
+}
+double TokenVar::set_number_value(double new_value) const{
+	return TokenValue::memory.set_value(_value, new_value);
+}
+
+
+
+
 
 
 
@@ -59,26 +91,34 @@ TokenOp::TokenOp(const std::string& s){
 	_type = op;
 	_value = string(s);
 }
-
 int TokenOp::get_priority() const {
-	if(_value == "+" || _value == "-")
+	if(_value == "=")
 		return 1;
-	return 2;
+	if(_value == "+" || _value == "-")
+		return 2;
+	return 3;
 }
-
-double TokenOp::eval(TokenNum a, TokenNum b) const {
+double TokenOp::eval(TokenValue* a, TokenValue* b) const {
 	if(_value == "+")
-		return a.get_number_value() + b.get_number_value();
+		return a->get_number_value() + b->get_number_value();
 	if(_value == "-")
-		return a.get_number_value() - b.get_number_value();
+		return a->get_number_value() - b->get_number_value();
 	if(_value == "*")
-		return a.get_number_value() * b.get_number_value();
+		return a->get_number_value() * b->get_number_value();
 	if(_value == "/")
-		return a.get_number_value() / b.get_number_value();
+		return a->get_number_value() / b->get_number_value();
+	if(_value == "="){
+		return ((TokenVar *) a)->set_number_value(b->get_number_value());
+	}
 	cout << "Error TokenOp::eval : " << _value << "has not a defined eval" << endl;
 	error();
 	return 0;
 }
+
+
+
+
+
 
 
 
@@ -90,13 +130,14 @@ TokenPar::TokenPar(const std::string& s){
 	_type = par;
 	_value = string(s);
 }
-
 int TokenPar::get_priority() const{
-	if(_value == ")")
-		cout << "Error TokenPar::get_priority : token_par get_priority on right parenthese." << endl;
-	return 0;
+	if(_value == ")"){
+		cout << "Error TokenPar::get_priority : on right parenthese." << endl;
+		error();
+	}
+	return -1;
 }
-
 bool TokenPar::is_left_par() const{
 	return _value == "(";
 }
+
