@@ -53,7 +53,7 @@ Expr::Expr(const string str){
 
 		else{
 			//Type non défini
-			cout << "Error Expr constructor : " << (*it)->get_value() << " is not a number, an operator or a parenthese." << endl;
+			cout << "Error Expr constructor : " << (*it)->get_string() << " is not a number, an operator or a parenthese." << endl;
 			error();
 		}
 	}
@@ -76,7 +76,7 @@ void Expr::print(){
 	vector<ExprToken*>::iterator it;
 
 	for(it = _tokens.begin(); it != _tokens.end(); ++it){
-		cout << (*it)->get_value() << " ";
+		cout << (*it)->get_string() << " ";
 	}
 	cout << endl;
 }
@@ -100,7 +100,7 @@ double Expr::eval(){
 			pile.pop();
 
 			res = ((TokenOp *) *it)->eval(*a, *b);
-			//cout << "Opération : " << a->get_value() << " " << ((TokenOp *) *it)->get_value() << " " << b->get_value() << " " << res << endl;
+			//cout << "Opération : " << a->get_string() << " " << ((TokenOp *) *it)->get_string() << " " << b->get_string() << " " << res << endl;
 
 			ExprToken* tmp = new TokenNum(to_string(res));
 			liste_tmp.push_back(tmp);

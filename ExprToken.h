@@ -13,7 +13,7 @@ class ExprToken{
 public:
 	//ExprToken(const std::string& s);
 	type get_type();
-	std::string get_value();
+	std::string get_string();
 	int compare_priority(const ExprToken* token);
 	virtual int get_priority() const = 0;
 

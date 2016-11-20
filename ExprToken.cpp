@@ -8,7 +8,7 @@ type ExprToken::get_type(){
 	return _type;
 }
 
-string ExprToken::get_value(){
+string ExprToken::get_string(){
 	return _value;
 }
 
