@@ -3,9 +3,11 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "utils.h"
 
-enum type{num, op, par, id};
+
+enum type{op, num, par, id, func};
 enum type_par{left, right};
 
 
@@ -23,7 +25,7 @@ protected:
 	std::string _value;
 };
 
-
+#include "expr.h"
 
 class TokenValue : public ExprToken {
 public:
@@ -51,6 +53,18 @@ public:
 	double set_number_value(double new_value) const;
 };
 
+
+
+class TokenFunc : public TokenValue {
+public:
+	TokenFunc(const std::string& s);
+	~TokenFunc();
+	double get_number_value() const;
+private:
+	std::string _name; 
+	std::vector<Expr*> _arg;
+	static double _cos();
+};
 
 
 class TokenOp : public ExprToken {

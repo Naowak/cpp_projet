@@ -15,11 +15,11 @@ class Expr{
 		//Destroy an Expr
 		~Expr();
 		//Retourne la valeur de l'expression
-		double eval();
+		double eval() const;
 		//Affiche la représentation interne
-		void print();
+		void print() const;
 		//Est il demander que le résultat s'affiche ?
-		bool is_printed();
+		bool is_printed() const;
 
 	private:
 		std::vector<ExprToken*> _tokens;

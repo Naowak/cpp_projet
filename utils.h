@@ -26,6 +26,9 @@ void error();
 
 ExprToken* create_expr_token(const std::string& s);
 
+std::string get_name_from_fun_string(const std::string& s);
+std::vector<std::string> get_arguments_from_fun_string(const std::string& s);
+
 std::string set_space(const std::string& s);
 std::vector<ExprToken*> split (const std::string& s, char delim);
 std::vector<std::string> split_in_string (const std::string& s, char delim);

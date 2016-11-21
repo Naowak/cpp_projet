@@ -83,7 +83,6 @@ string set_space(const string& s){
 		//Fonction
 		if(regex_search(str, res, REGEX_FUNC, regex_constants::match_continuous))
 		{
-			cout << res.str() << endl;
 			ret += res.str() + " ";
 			str = str.substr(res.length(), str.length());
 
@@ -142,12 +141,44 @@ ExprToken* create_expr_token(const string& s){
 		et = new TokenOp(s);
 	else if(is_parentheses(s))
 		et = new TokenPar(s);
+	else if(is_func(s))
+		et = new TokenFunc(s);
 	else{
 		cout << "Error create_expr_token : " << s << " has no type." << endl;
 		error();
 	}
 	return et;
 }
+
+
+string get_name_from_fun_string(const string& s){
+	if(!is_func(s)){
+		cout << "Error utils :: get_arguments_from_fun_string : " << s << "is not a func" << endl;
+	}
+	string str = string(s);
+	smatch res;
+	regex_search(str, res, REGEX_ID, regex_constants::match_continuous);
+	return res.str();
+}
+
+vector<string> get_arguments_from_fun_string(const string& s){
+	if(!is_func(s)){
+		cout << "Error utils :: get_arguments_from_fun_string : " << s << "is not a func" << endl;
+	}
+	string str = string(s);
+	vector<string> args;
+	smatch res;
+	regex_search(str, res, REGEX_ID, regex_constants::match_continuous);
+	//On supprime le nom de la fonction
+	str = str.substr(res.length(), str.length());
+	//On supprime les parantheses
+	str = str.substr(1, str.length()-2);
+	args = split_in_string(str, ',');
+	return args;
+}
+
+
+
 
 vector<ExprToken*> split (const string& s, char delim){
 

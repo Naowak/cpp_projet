@@ -27,6 +27,11 @@ Expr::Expr(const string& str, type_expr te){
 			_tokens.push_back(*it);
 		}
 
+		else if((*it)->get_type() == func){
+			//On lit une fonction
+			_tokens.push_back(*it);
+		}
+
 		else if((*it)->get_type() == op){
 			while(!pile.empty() && (*it)->compare_priority(pile.top()) < 0){
 				//Tant que le top de la pile a une priorité supérieur ou égale
@@ -83,8 +88,8 @@ Expr::~Expr(){
 		delete *it;
 }
 
-void Expr::print(){
-	vector<ExprToken*>::iterator it;
+void Expr::print() const{
+	vector<ExprToken*>::const_iterator it;
 
 	for(it = _tokens.begin(); it != _tokens.end(); ++it){
 		cout << (*it)->get_string() << " ";
@@ -93,9 +98,9 @@ void Expr::print(){
 }
 
 
-double Expr::eval(){
+double Expr::eval() const{
 	stack<ExprToken*> pile;
-	vector<ExprToken*>::iterator it;
+	vector<ExprToken*>::const_iterator it;
 	vector<ExprToken*> liste_tmp;
 	double res;
 
@@ -105,6 +110,9 @@ double Expr::eval(){
 			pile.push(*it);
 
 		else if((*it)->get_type() == id)
+			pile.push(*it);
+
+		else if((*it)->get_type() == func)
 			pile.push(*it);
 
 		else if((*it)->get_type() == op){
@@ -131,8 +139,10 @@ double Expr::eval(){
 
 	double ret = 0;
 
-	if(!pile.empty())
-		ret = ((TokenNum *) pile.top())->get_number_value();
+	if(!pile.empty()){
+		TokenValue* tmp = (TokenValue *) pile.top();
+		ret = tmp->get_number_value();
+	}
 
 	for(it = liste_tmp.begin(); it != liste_tmp.end(); ++it)
 		delete *it;
@@ -140,7 +150,7 @@ double Expr::eval(){
 	return ret;
 }
 
-bool Expr::is_printed(){
+bool Expr::is_printed() const{
 	return _type_expr == printed_expr;
 }
 

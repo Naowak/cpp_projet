@@ -1,4 +1,5 @@
 #include <string>
+#include <cmath>
 #include "utils.h"
 #include "ExprToken.h"
 
@@ -74,6 +75,45 @@ double TokenVar::get_number_value() const{
 }
 double TokenVar::set_number_value(double new_value) const{
 	return TokenValue::memory.set_value(_value, new_value);
+}
+
+
+
+
+
+TokenFunc::TokenFunc(const std::string& s){
+	_type = func;
+	_value = string(s);
+	_name = get_name_from_fun_string(s);
+
+	vector<string> args = get_arguments_from_fun_string(s);
+	vector<string>::iterator it;
+
+	for(it = args.begin(); it != args.end(); ++it){
+		_arg.push_back(new Expr(*it, not_printed_expr));
+	}
+}
+
+TokenFunc::~TokenFunc(){
+	vector<Expr*>::iterator it;
+	for(it = _arg.begin(); it != _arg.end(); ++it)
+		delete *it;
+}
+
+double TokenFunc::get_number_value() const{
+	if(_name == "cos"){
+		if(_arg.size() != 1){
+			cout << "Error TokenFunc::get_number_value() : cos needs one and only one argument";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		return cos(arg);
+	}
+	else{
+		cout << "Error TokenFunc::get_number_value() : " << _name << " does not exist." << endl;
+		error();
+	}
+	return -1;
 }
 
 

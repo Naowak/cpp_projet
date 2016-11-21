@@ -8,7 +8,7 @@ CC=g++
 CXXFLAGS+= -std=c++11 -g
 
 $(TARGET):  $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@
+	$(CC) $(OBJECTS) -o $@ -lm
 
 .cpp.o:
 	$(CC) $(CXXFLAGS) -c $<
