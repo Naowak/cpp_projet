@@ -20,6 +20,7 @@ bool is_operator(const std::string& s);
 bool is_number(const std::string& s);
 bool is_parentheses(const std::string& s);
 bool is_id(const std::string& s);
+bool is_func(const std::string& s);
 
 void error();
 
