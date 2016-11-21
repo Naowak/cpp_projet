@@ -6,7 +6,12 @@
 #include "utils.h"
 #include "ExprToken.h"
 
-
+#define REGEX_OPERATOR regex("[+-/*=]")
+#define REGEX_NUMBER regex("-?[0-9]+\\.?[0-9]*")
+#define REGEX_PARANTHESE regex("[()]")
+#define REGEX_ID regex("[a-z]+")
+#define REGEX_FUNC regex("[a-z]+\\((([a-z]+|-?[0-9]+\\.?[0-9]*),)*([a-z]|-?[0-9]+\\.?[0-9]*)*\\)")
+#define REGEX_SPACE regex("\\s+")
 
 using namespace std;
 
@@ -45,21 +50,24 @@ double Map::get_value(string name){
 
 
 bool is_operator(const string& s){
-	return regex_match(s, regex("[+-/*=]"));
+	return regex_match(s, REGEX_OPERATOR);
 }
 
 bool is_number(const string& s){
-	return regex_match(s, regex("-?[0-9]+\\.?[0-9]*"));
+	return regex_match(s, REGEX_NUMBER);
 }
 
 bool is_parentheses(const string& s){
-	return regex_match(s, regex("[()]"));
+	return regex_match(s, REGEX_PARANTHESE);
 }
 
 bool is_id(const string& s){
-	return regex_match(s, regex("[a-z]+"));
+	return regex_match(s, REGEX_ID);
 }
 
+bool is_func(const string& s){
+	return regex_match(s, REGEX_FUNC);
+}
 
 
 void error(){
@@ -67,48 +75,62 @@ void error(){
 }
 
 
-
 string set_space(const string& s){
-	string a;
-	char c;
-	int i;
-	for(i = 0; i < s.length(); i++){
-		c = s[i];
-		if(c != ' ')
-			a += string(1, c);
-	}
+	string str = string(s);
+	string ret;
+	smatch res;
+	while(!str.empty()){
+		//Fonction
+		if(regex_search(str, res, REGEX_FUNC, regex_constants::match_continuous))
+		{
+			cout << res.str() << endl;
+			ret += res.str() + " ";
+			str = str.substr(res.length(), str.length());
 
-	string res;
-	string tmp;
-	bool was_number_or_point = false;
-	bool was_alpha = false;
-	for(i = 0; i < a.length(); i++){
-		c = a[i];
-		tmp = string(1, c);
-		
-		if(is_number(tmp) || tmp == "."){
-			if(!was_number_or_point)
-				res += " ";
-			res += tmp;
-			was_number_or_point = true;
-			was_alpha = false;
 		}
-		else if(is_id(tmp)){
-			if(!was_alpha)
-				res += " ";
-			res += tmp;
-			was_alpha = true;
-			was_number_or_point = false;
+		//Variable
+		else if(regex_search(str, res, REGEX_ID, regex_constants::match_continuous))
+		{
+			ret += res.str() + " ";
+			str = str.substr(res.length(), str.length());
+
 		}
-		else{
-			res += " " + tmp;
-			was_number_or_point = false;
-			was_alpha = false;
+		//Number
+		else if(regex_search(str, res, REGEX_NUMBER, regex_constants::match_continuous))
+		{
+			ret += res.str() + " ";
+			str = str.substr(res.length(), str.length());
+
+		}
+		//Paranthèse
+		else if(regex_search(str, res, REGEX_PARANTHESE, regex_constants::match_continuous))
+		{
+			ret += res.str() + " ";
+			str = str.substr(res.length(), str.length());
+
+		}
+		//Opérateur
+		else if(regex_search(str, res, REGEX_OPERATOR, regex_constants::match_continuous))
+		{
+			ret += res.str() + " ";
+			str = str.substr(res.length(), str.length());
+
+		}
+		//Espace
+		else if(regex_search(str, res, REGEX_SPACE, regex_constants::match_continuous))
+		{
+			str = str.substr(res.length(), str.length());
+		}
+		else
+		{
+			cout << "Error : Synthax Error" << endl;
+			break;
 		}
 	}
-
-	return res;
+	return ret;
 }
+
+
 
 ExprToken* create_expr_token(const string& s){
 	ExprToken* et;
