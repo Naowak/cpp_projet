@@ -109,6 +109,92 @@ double TokenFunc::get_number_value() const{
 		double arg = _arg.at(0)->eval();
 		return cos(arg);
 	}
+	else if(_name == "sin"){
+		if(_arg.size() != 1){
+			cout << "Error TokenFunc::get_number_value() : sin needs one and only one argument";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		return sin(arg);
+	}
+	else if(_name == "tan"){
+		if(_arg.size() != 1){
+			cout << "Error TokenFunc::get_number_value() : tan needs one and only one argument";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		return tan(arg);
+	}
+	else if(_name == "sqrt"){
+		if(_arg.size() != 1){
+			cout << "Error TokenFunc::get_number_value() : sqrt needs one and only one argument";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		return sqrt(arg);
+	}
+	else if(_name == "log"){
+		if(_arg.size() != 1){
+			cout << "Error TokenFunc::get_number_value() : log needs one and only one argument";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		return log(arg);
+	}
+	else if(_name == "exp"){
+		if(_arg.size() != 1){
+			cout << "Error TokenFunc::get_number_value() : exp needs one and only one argument";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		return exp(arg);
+	}
+	else if(_name == "pow"){
+		if(_arg.size() != 2){
+			cout << "Error TokenFunc::get_number_value() : pow needs two and only two arguments";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		double arg2 = _arg.at(1)->eval();
+		return pow(arg, arg2);
+	}
+	else if(_name == "hypot"){
+		if(_arg.size() != 2){
+			cout << "Error TokenFunc::get_number_value() : hypot needs two and only two arguments";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		double arg2 = _arg.at(1)->eval();
+		return hypot(arg, arg2);
+	}
+	else if(_name == "lerp"){
+		if(_arg.size() != 3){
+			cout << "Error TokenFunc::get_number_value() : lerp needs three and only three arguments";
+			error();
+		}
+		double arg = _arg.at(0)->eval();
+		double arg2 = _arg.at(1)->eval();
+		double arg3 = _arg.at(2)->eval();
+		return (1-arg3)*arg + arg3*arg2;
+	}
+	else if(_name == "polynome"){
+		if(_arg.size() < 3){
+			cout << "Error TokenFunc::get_number_value() : lerp needs three and only three arguments";
+			error();
+		}
+		int i;
+		int size = (int) _arg.at(0)->eval();
+		if(_arg.size() != size + 3){
+			cout << "Error TokenFunc::get_number_value() : lerp needs three and only three arguments";
+			error();
+		}
+		double x = _arg.at(_arg.size()-1)->eval();;
+		double res = 0;
+		for(i = 1; i < size+2; ++i)
+			res += _arg.at(i)->eval()*pow(x, i-1);
+		return res;
+
+	}
 	else{
 		cout << "Error TokenFunc::get_number_value() : " << _name << " does not exist." << endl;
 		error();

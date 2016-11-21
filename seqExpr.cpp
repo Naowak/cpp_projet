@@ -62,8 +62,11 @@ int main(){
 	string str1 = "(17.6-24.1)/4*3+2.49\n869;8.23*96-5/4.569";//59*7+6;53/8\n56-9\n2-3;5*9";
 	string str2 = "var = (5 + 9) *7;second = 2;var * second / 3 + 4";
 	string str3 = "5 + 2 + cos(5)";
+	string str4 = "x = 0; y = 6; z = cos(x) + cos(y); cos(exp(z)) ";
+	string str5 = "a = 1; b = 2; c = 3; pow(b,c)\n lerp(a,b,c)\n hypot(b,a)";
+	string str6 = "polynome(3,2,2,2,2,4)";
 
-	seqExpr sexpr = seqExpr(str3);
+	seqExpr sexpr = seqExpr(str6);
 	sexpr.print();
 	cout << endl << "Resultats : " << endl;
 	sexpr.eval();
