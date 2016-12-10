@@ -62,14 +62,65 @@ int main(){
 	string str1 = "(17.6-24.1)/4*3+2.49\n869;8.23*96-5/4.569";//59*7+6;53/8\n56-9\n2-3;5*9";
 	string str2 = "var = (5 + 9) *7;second = 2;var * second / 3 + 4";
 	string str3 = "5 + 2 + cos(5)";
-	string str4 = "x = 0; y = 6; z = cos(x) + cos(y); cos(exp(z)) ";
+	string str4 = "x = 0; y = 6; z = cos(x) + cos(y); cos(exp(z)); cos(cos(5)) ";
 	string str5 = "a = 1; b = 2; c = 3; pow(b,c)\n lerp(a,b,c)\n hypot(b,a)";
 	string str6 = "polynome(3,2,2,2,2,4)";
+	string str7 = "a = 1; b = 2; c = a + b; a = 7; c";
 
-	seqExpr sexpr = seqExpr(str6);
-	sexpr.print();
+	seqExpr sexpr1 = seqExpr(str1);
+	sexpr1.print();
 	cout << endl << "Resultats : " << endl;
-	sexpr.eval();
+	sexpr1.eval();
+
+	cout << endl << "--------------------------------------" << endl;
+
+	seqExpr sexpr2 = seqExpr(str2);
+	sexpr2.print();
+	cout << endl << "Resultats : " << endl;
+	sexpr2.eval();
+
+	cout << endl << "--------------------------------------" << endl;
+
+	seqExpr sexpr3 = seqExpr(str3);
+	sexpr3.print();
+	cout << endl << "Resultats : " << endl;
+	sexpr3.eval();
+
+	cout << endl << "--------------------------------------" << endl;
+
+	seqExpr sexpr4 = seqExpr(str4);
+	sexpr4.print();
+	cout << endl << "Resultats : " << endl;
+	sexpr4.eval();
+
+	cout << endl << endl << "--------------------------------------" << endl;
+
+	seqExpr sexpr5 = seqExpr(str5);
+	sexpr5.print();
+	cout << endl << "Resultats : " << endl;
+	sexpr5.eval();
+
+	cout << endl << endl << "--------------------------------------" << endl;
+
+	seqExpr sexpr6 = seqExpr(str6);
+	sexpr6.print();
+	cout << endl << "Resultats : " << endl;
+	sexpr6.eval();
+
+	cout << endl << endl << "--------------------------------------" << endl;
+
+	seqExpr sexpr7 = seqExpr(str7);
+	sexpr7.print();
+	cout << endl << "Resultats : " << endl;
+	sexpr7.eval();
+
+	cout << endl << endl << "--------------------------------------" << endl;
+
+	string str8 = "cos(5)\n cos(cos(5))";
+	seqExpr sepr8 = seqExpr(str8);
+	sepr8.print();
+	cout << endl << "Resultats : " << endl;
+	sepr8.eval();
 
 	return 0;
 }

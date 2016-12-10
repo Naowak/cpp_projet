@@ -10,7 +10,7 @@
 #define REGEX_NUMBER regex("-?[0-9]+\\.?[0-9]*")
 #define REGEX_PARANTHESE regex("[()]")
 #define REGEX_ID regex("[a-z]+")
-#define REGEX_FUNC regex("[a-z]+\\((([a-z]+|-?[0-9]+\\.?[0-9]*),)*([a-z]|-?[0-9]+\\.?[0-9]*)*\\)")
+#define REGEX_FUNC regex("[a-z]+\\(.*\\)")
 #define REGEX_SPACE regex("\\s+")
 
 using namespace std;
@@ -66,7 +66,54 @@ bool is_id(const string& s){
 }
 
 bool is_func(const string& s){
-	return regex_match(s, REGEX_FUNC);
+	string str = string(s);
+	string ret;
+	smatch res;
+	if(regex_search(str, res, REGEX_ID, regex_constants::match_continuous))
+		str = str.substr(res.length(), str.length());
+	else
+		return false;
+	if(regex_search(str, res, regex("\\("), regex_constants::match_continuous))
+		str = str.substr(res.length(), str.length());
+	else
+		return false;
+	bool separateur = true;
+	while(!regex_search(str, res, regex("\\)"), regex_constants::match_continuous) || str.length() == 0){
+		//Différents arguments possible
+		if(separateur && is_func(str)){
+			//arg = func
+			if(regex_search(str, res, REGEX_FUNC, regex_constants::match_continuous)){
+				str = str.substr(res.length()-1, str.length());
+				separateur = false;
+			}
+			else
+				return false;
+		}
+		else if(separateur && regex_search(str, res, REGEX_ID, regex_constants::match_continuous)){
+			// arg = var
+			str = str.substr(res.length(), str.length());
+			separateur = false;
+		}
+		else if(separateur && regex_search(str, res, REGEX_NUMBER, regex_constants::match_continuous)){
+			//arg = number
+			str = str.substr(res.length(), str.length());
+			separateur = false;
+		}
+		else if(separateur && regex_search(str, res, regex("_[0-9]"), regex_constants::match_continuous)){
+			//arg = position arguments à fixer
+			str = str.substr(res.length(), str.length());
+			separateur = false;
+		}
+		else if(!separateur && regex_search(str, res, regex("\\s*,\\s*"), regex_constants::match_continuous)){
+			str = str.substr(res.length(), str.length());
+			separateur = true;
+		}
+		else
+			return false;
+	}
+	if(regex_search(str, res, regex("\\)"), regex_constants::match_continuous))
+		return true;
+	return false;
 }
 
 
@@ -141,8 +188,9 @@ ExprToken* create_expr_token(const string& s){
 		et = new TokenOp(s);
 	else if(is_parentheses(s))
 		et = new TokenPar(s);
-	else if(is_func(s))
+	else if(is_func(s)){
 		et = new TokenFunc(s);
+	}
 	else{
 		cout << "Error create_expr_token : " << s << " has no type." << endl;
 		error();

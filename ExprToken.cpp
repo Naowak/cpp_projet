@@ -5,7 +5,7 @@
 
 using namespace std;
 
-Map TokenValue::memory;
+Map TokenVar::memory;
 
 
 type ExprToken::get_type(){
@@ -71,10 +71,10 @@ TokenVar::TokenVar(const std::string& s){
 	_value = string(s);
 }
 double TokenVar::get_number_value() const{
-	return TokenValue::memory.get_value(_value);
+	return TokenVar::memory.get_value(_value);
 }
 double TokenVar::set_number_value(double new_value) const{
-	return TokenValue::memory.set_value(_value, new_value);
+	return TokenVar::memory.set_value(_value, new_value);
 }
 
 

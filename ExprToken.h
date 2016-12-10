@@ -29,7 +29,6 @@ protected:
 
 class TokenValue : public ExprToken {
 public:
-	static Map memory;
 	int get_priority() const;
 	virtual double get_number_value() const = 0;
 };
@@ -48,6 +47,7 @@ private:
 
 class TokenVar : public TokenValue {
 public:
+	static Map memory;
 	TokenVar(const std::string& s);
 	double get_number_value() const;
 	double set_number_value(double new_value) const;
@@ -62,8 +62,7 @@ public:
 	double get_number_value() const;
 private:
 	std::string _name; 
-	std::vector<Expr*> _arg;
-	static double _cos();
+	std::vector<Expr*> _arg;	
 };
 
 
